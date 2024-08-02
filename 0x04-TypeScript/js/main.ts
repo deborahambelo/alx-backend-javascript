@@ -1,55 +1,95 @@
-/** This module renders table based on a list of objects */
-
-
 /**
- * Create an interface for a Student that has the following elements:
- * - First name (string)
- * - Last name (string)
- * - Age (number)
- * - Location (string)
+ * Create an interface for a Director with the 3 expected methods
+ * - workFromHome() - returns a string
+ * - getCoffeeBreak() - returns a string
+ * - workDirectorTasks() - returns a string
  */
-interface Student {
-    firstName: string;
-    lastName: string;
-    age: number;
-    location: string;
-  }
+
+// Director interface
+interface DirectorsInterface {
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workDirectorTasks(): string; 
+}
+
 /**
- * Create a Students object with the following format:
+ * Create an interface for a Teacher with the 3 expected methods
+ * - workFromHome() - returns a string
+ * - getCoffeeBreak() - returns a string
+ * - workTeacherTasks() - returns a string
  */
-  const studentA: Student = {
-    firstName: 'Benyas',
-    lastName: 'Getachew',
-    age: 50,
-    location: 'Addis',
-  }
-  
-  const studentB: Student = {
-    firstName: 'Alex',
-    lastName: 'Abebe',
-    age: 45,
-    location: 'Jima',
-  }
+// Teacher interface
+interface TeacherInterface {
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workTeacherTasks(): string;
+}
+
 /**
- * Create an array of Students
- */ 
-  const studentList = [studentA, studentB];
+ * Create a class for a Director that implements the Director interface
+ */
+class Director implements DirectorsInterface {
+  workFromHome(): string {
+    return 'Working from home';
+  }
+  getCoffeeBreak(): string {
+    return 'Getting a coffee break';
+  }
+  workDirectorTasks(): string {
+    return 'Getting to director tasks';
+  }
+}
 
-  const table = document.createElement('table');
-  const tbody = document.createElement('tbody');
+/**
+ * Create a class for a Teacher that implements the Teacher interface
+ */
+class Teacher implements TeacherInterface {
+  workFromHome(): string {
+    return 'Cannot work from home';
+  }
+  getCoffeeBreak(): string {
+    return 'Cannot have a break';
+  }
+  workTeacherTasks(): string {
+    return 'Getting to work';
+  }
+}
 
-  studentList.forEach((obj) => { // for each student in the list
-    const row = document.createElement('tr'); // create a row
-    const cellName = document.createElement('td');  // create a cell for the name
-    const cellLocation = document.createElement('td'); // create a cell for the location
-    // set the text content of the cell to the first name
-    cellName.textContent = obj.firstName;
-    // set the text content of the cell to the location
-    cellLocation.textContent = obj.location; 
-    row.appendChild(cellName); // append the cell to the row
-    row.appendChild(cellLocation); // append the cell to the row
-    tbody.appendChild(row); // append the row to the tbody
-  });
-  table.appendChild(tbody); // append the tbody to the table
-  document.body.appendChild(table); // append the table to the body
-  
+/**
+ * Function that creates a Employee object with the following requirements:
+ * - Can be a Director or a Teacher instance
+ * - Accepts 1 argument:
+ *  - salary (either a number or a string):
+ *    - If a number and less than 500 returns a new Teacher instance
+ *    - Otherwise it should return a Director instance
+ */
+function createEmployee(firstName: string, lastName: string, salary: number | string): Director | Teacher {
+  if (salary as number && salary < 500) return new Teacher();
+  else return new Director(); 
+}
+
+console.log(createEmployee('Guillaume', 'Salva', 200));
+console.log(createEmployee('John', 'Doe', 1000));
+console.log(createEmployee('Gerard', 'Zuck', '$500'));
+
+// Function to check if the employee is a director
+function isDirector(employee: Director | Teacher): employee is Director {
+  return (employee instanceof Director) ? true : false;
+}
+// Funtion to check type of employee and establish the correct task
+function executeWork(employee: Director | Teacher): string {
+  return isDirector(employee) ? employee.workDirectorTasks() : employee.workTeacherTasks();
+}
+
+console.log(executeWork(createEmployee('Guillaume', 'Salva', 200)));
+console.log(executeWork(createEmployee('John', 'Doe', 1000)));
+
+// String literal that allows a variable to have the value of Math or History only.
+type Subjects = 'Math' | 'History';
+// Function that takes todayClass as an argument and returns a correspondent string
+function teachClass(todayClass: Subjects): string{
+  return todayClass === 'Math' ? 'Teaching Math' : 'Teaching History';
+}
+
+console.log(teachClass('Math'));
+console.log(teachClass('History'));
